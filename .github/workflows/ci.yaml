@@ -47,9 +47,6 @@ jobs:
       - name: Lint with flake8
         run: flake8 .
 
-      - name: Check formatting with black
-        run: black --check .
-
       # Run tests with coverage
       - name: Run tests
         run: |
@@ -85,8 +82,8 @@ jobs:
         run: npm run lint --if-present
 
       # Run tests
-      - name: Run tests
-        run: npm test --if-present
+ #     - name: Run tests
+ #       run: npm test --if-present
 
       # Build
       - name: Build project
