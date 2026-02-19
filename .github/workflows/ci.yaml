@@ -13,8 +13,6 @@ jobs:
     name: Django-backend
     runs-on: ubuntu-latest
 
-    services:
-    env:
     defaults:
       run:
         working-directory: backend
