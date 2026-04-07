@@ -231,4 +231,5 @@ class UserLoginView(APIView):
                         "errors": str(exp),
                     }
                 ).data,
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

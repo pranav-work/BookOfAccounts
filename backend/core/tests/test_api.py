@@ -180,3 +180,14 @@ class TestUserLogin(TestCase):
         res = self.client.post(self.url, payload)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertNotIn('access', res.data)
+
+    @patch("core.views.CustomTokenSerializer.is_valid")
+    def test_user_registration_integrity_error(self, mock_valid):
+        """Test API handles IntegrityError properly"""
+        mock_valid.side_effect = Exception("Unable to proceed")
+        payload = {
+            "email": self.email,
+            "password": self.password
+        }
+        res = self.client.post(self.url, payload)
+        self.assertEqual(res.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
