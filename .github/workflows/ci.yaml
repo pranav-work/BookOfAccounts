@@ -104,7 +104,7 @@ jobs:
       frontend: ${{ steps.filter.outputs.frontend }}
 
     steps:
-      - uses: action/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Check changed paths
         id: filter
