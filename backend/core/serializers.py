@@ -5,6 +5,12 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
 
+class ApiErrorResponseSerializer(serializers.Serializer):
+    """Serializer for user registration errors"""
+    message = serializers.CharField()
+    errors = serializers.JSONField(required=False)
+
+
 class RegistrationRequestSerializer(serializers.Serializer):
     """Serializer for user registration request"""
     email = serializers.EmailField()

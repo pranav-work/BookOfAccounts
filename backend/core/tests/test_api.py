@@ -56,7 +56,8 @@ class TestUserRegistration(TestCase):
         }
         res = self.client.post(self.url, payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("email", res.data["message"])
+        self.assertIn('errors', res.data)
+        self.assertEqual(res.data['message'], "Validation Error")
 
     def test_empty_email(self):
         payload = {
@@ -65,6 +66,8 @@ class TestUserRegistration(TestCase):
         }
         res = self.client.post(self.url, payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('errors', res.data)
+        self.assertEqual(res.data['message'], "Validation Error")
 
     def test_invalid_email_format(self):
         payload = {
@@ -73,7 +76,8 @@ class TestUserRegistration(TestCase):
         }
         res = self.client.post(self.url, payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("email", res.data["message"])
+        self.assertIn('errors', res.data)
+        self.assertEqual(res.data['message'], "Validation Error")
 
     def test_missing_password(self):
         payload = {
@@ -81,7 +85,8 @@ class TestUserRegistration(TestCase):
         }
         res = self.client.post(self.url, payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("password", res.data["message"])
+        self.assertIn('errors', res.data)
+        self.assertEqual(res.data['message'], "Validation Error")
 
     def test_user_registration_internal_server_error(self):
         """Test API returns 500 when unexpected exception occurs"""
@@ -95,13 +100,14 @@ class TestUserRegistration(TestCase):
                 "core.serializers.UserCreateSerializer.save",
                 side_effect=Exception("Unexpected error")
         ):
-            response = self.client.post(self.url, payload)
+            res = self.client.post(self.url, payload)
 
         self.assertEqual(
-            response.status_code,
+            res.status_code,
             status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-        self.assertIn("Something went wrong", response.data["message"])
+        self.assertIn('errors', res.data)
+        self.assertEqual(res.data['message'], "Something went wrong")
 
     @patch("core.serializers.UserCreateSerializer.save")
     def test_user_registration_integrity_error(self, mock_save):
@@ -114,10 +120,8 @@ class TestUserRegistration(TestCase):
             "password": "Test@1234"
         }
 
-        response = self.client.post(self.url, payload)
+        res = self.client.post(self.url, payload)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.data["message"],
-            "Database integrity error"
-        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('errors', res.data)
+        self.assertEqual(res.data['message'], "Database Integrity error")

@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError
 from core.serializers import (
     RegistrationRequestSerializer, RegistrationResponseSerializer
-    , UserCreateSerializer
+    , ApiErrorResponseSerializer, UserCreateSerializer
 )
 
 
@@ -40,6 +40,8 @@ class UserRegistrationView(APIView):
         request=RegistrationRequestSerializer,
         responses={
             201 : RegistrationResponseSerializer,
+            400 : ApiErrorResponseSerializer,
+            500 : ApiErrorResponseSerializer,
         },
         examples=[
             OpenApiExample(
@@ -58,6 +60,24 @@ class UserRegistrationView(APIView):
                 },
                 response_only=True,
                 status_codes=[201]
+            ),
+            OpenApiExample(
+                "Validation Failed",
+                value={
+                    "message": "Validation Failed",
+                    "error": {"email": ["This field is required."]},
+                },
+                response_only=True,
+                status_codes=[400]
+            ),
+            OpenApiExample(
+                "Unknown Failure",
+                value={
+                    "message": "Something went wrong",
+                    "error": "application failed",
+                },
+                response_only=True,
+                status_codes=[500]
             ),
         ],
     )
@@ -83,22 +103,25 @@ class UserRegistrationView(APIView):
             )
         except ValidationError as exp:
             return Response(
-                data={
-                    "message": exp.detail,
-                },
+                data=ApiErrorResponseSerializer({
+                    "message": "Validation Error",
+                    "errors": exp.detail,
+                }).data,
                 status=status.HTTP_400_BAD_REQUEST
             )
-        except IntegrityError:
+        except IntegrityError as exp:
             return Response(
-                data={
-                    "message" : "Database integrity error",
-                },
+                data=ApiErrorResponseSerializer({
+                    "message": "Database Integrity error",
+                    "errors": str(exp),
+                }).data,
                 status=status.HTTP_400_BAD_REQUEST
             )
         except Exception as exp:
             return Response(
-                data={
-                    "message": f"Something went wrong {str(exp)}",
-                },
+                data=ApiErrorResponseSerializer({
+                    "message": "Something went wrong",
+                    "errors": str(exp),
+                }).data,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
