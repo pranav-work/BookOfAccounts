@@ -124,8 +124,8 @@ jobs:
 
     if: needs.detect-changes.outputs.backend == 'true'
     steps:
-      - uses: actions.checkout@v4
-      - name: Login to HGCR
+      - uses: actions/checkout@v4
+      - name: Login to GHCR
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build backend image
@@ -142,8 +142,8 @@ jobs:
 
     if: needs.detect-changes.outputs.frontend == 'true'
     steps:
-      - uses: actions.checkout@v4
-      - name: Login to HGCR
+      - uses: actions/checkout@v4
+      - name: Login to GHCR
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build frontend image
