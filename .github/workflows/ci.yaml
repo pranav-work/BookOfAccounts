@@ -3,10 +3,12 @@ name: BookOfAccountsWorkflow
 on:
   push:
     branches:
-      - '**' 
+      - development
+      - release/image
   pull_request:
     branches:
-      - '**'  
+      - development
+      - release/image
 
 jobs:
   backend:
@@ -88,3 +90,64 @@ jobs:
       # Build
       - name: Build project
         run: npm run build
+
+  # detect changes in folders
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+
+    if: github.ref == 'refs/heads/release/image' && github.event_name == 'push'
+
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+
+    steps:
+      - uses: action/checkout@v4
+
+      - name: Check changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend: 
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
+  # Backend Image
+  build-backend:
+    name: Build Backend Images
+    runs-on: ubuntu-latest
+    needs: detect-changes
+
+    if: needs.detect-changes.outputs.backend == 'true'
+    steps:
+      - uses: actions.checkout@v4
+      - name: Login to HGCR
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build backend image
+        run: docker build -f docker/Dockerfile.backend -t ghcr.io/${{ github.repository }}/backend:latest .
+
+      - name: Push backend image
+        run: docker push ghcr.io/${{ github.repository }}/backend:latest
+
+  # Frontend Image
+  build-frontend:
+    name: Build frontend Images
+    runs-on: ubuntu-latest
+    needs: detect-changes
+
+    if: needs.detect-changes.outputs.frontend == 'true'
+    steps:
+      - uses: actions.checkout@v4
+      - name: Login to HGCR
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build frontend image
+        run: docker build -f docker/Dockerfile.frontend -t ghcr.io/${{ github.repository }}/frontend:latest .
+
+      - name: Push frontend image
+        run: docker push ghcr.io/${{ github.repository }}/frontend:latest

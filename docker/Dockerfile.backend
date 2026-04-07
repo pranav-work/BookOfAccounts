@@ -1,0 +1,39 @@
+# ---- Base Image ----
+FROM python:3.11-slim
+
+# Build Variables
+ARG USER_NAME=backenduser
+ARG USER_GROUP=backendgroup
+ARG VENV_PATH=/venv
+
+
+# Envirinment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV VIRTUAL_ENV=${VENV_PATH}
+ENV PATH="$VENV_PATH/bin:$PATH"
+
+# creation of user and group
+RUN addgroup --system ${USER_GROUP} \
+    && adduser --system ${USER_NAME} --ingroup ${USER_GROUP}
+
+# Setup venv
+COPY backend/requirements.txt /tmp/requirements.txt
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends build-essential libssl-dev libffi-dev python3-venv \
+ && python3 -m venv ${VENV_PATH} \
+ && ${VENV_PATH}/bin/pip install --upgrade pip setuptools wheel \
+ && ${VENV_PATH}/bin/pip install --no-cache-dir -r /tmp/requirements.txt \
+ && apt-get purge -y --auto-remove build-essential libssl-dev libffi-dev \
+ && rm -rf /var/lib/apt/lists/* /tmp/requirements.txt
+
+
+# ---- Workdir ----
+WORKDIR /backend
+COPY --chown=${USER_NAME}:${USER_GROUP} ./backend/ /backend/
+
+# Switch user
+USER ${USER_NAME}
+EXPOSE 8000
+# Collect static files (optional if you're using whitenoise)
+CMD ["gunicorn", "boa.wsgi:application", "--bind", "0.0.0.0:8000"]
