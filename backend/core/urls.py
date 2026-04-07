@@ -3,15 +3,21 @@ from drf_spectacular.views import (
     SpectacularSwaggerView, SpectacularRedocView, SpectacularAPIView)
 from core import views
 
+
+app_name = 'core'
 urlpatterns = [
-    path('health-check/', views.health_check),
+    path('health-check/', views.health_check, name='health-check'),
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path(
         'schema/swagger-ui/'
-        , SpectacularSwaggerView.as_view(url_name='schema')
+        , SpectacularSwaggerView.as_view(url_name='core:schema')
         , name='swagger-ui'),
     path(
         'schema/redoc/'
-        , SpectacularRedocView.as_view(url_name='schema')
+        , SpectacularRedocView.as_view(url_name='core:schema')
         , name='redoc'),
+    path(
+        'registration/'
+        , views.UserRegistrationView.as_view()
+        , name='registration'),
 ]
