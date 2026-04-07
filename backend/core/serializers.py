@@ -3,6 +3,7 @@
 import re
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class ApiErrorResponseSerializer(serializers.Serializer):
@@ -21,6 +22,23 @@ class RegistrationResponseSerializer(serializers.Serializer):
     """Serializer for user registration response"""
     id = serializers.IntegerField()
     email = serializers.EmailField()
+
+
+class LoginRequestSerializer(serializers.Serializer):
+    """Serializer for user login request"""
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+
+class CustomTokenSerializer(TokenObtainPairSerializer):
+    """Serializer for user login response"""
+
+    @classmethod
+    def get_token(cls, user):
+        """token generation for user"""
+        token = super(CustomTokenSerializer, cls).get_token(user)
+        token['email'] = user.email
+        return token
 
 
 # Model serializers

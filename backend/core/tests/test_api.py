@@ -125,3 +125,58 @@ class TestUserRegistration(TestCase):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('errors', res.data)
         self.assertEqual(res.data['message'], "Database Integrity error")
+
+
+class TestUserLogin(TestCase):
+    """Test cases for user login endpoint"""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.url = reverse('core:login')
+        self.email = "sample@gmail.com"
+        self.password = "StrongPass123"
+        self.user = get_user_model().objects.create_user(
+            email=self.email,
+            password=self.password
+        )
+
+    def test_user_login_success(self):
+        """Test user login success scenario"""
+        payload = {
+            "email": self.email,
+            "password": self.password
+        }
+        res = self.client.post(self.url, payload)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn('access', res.data)
+        self.assertIsNotNone(res.data['access'])
+        self.assertIn('refresh', res.data)
+        self.assertIsNotNone(res.data['refresh'])
+
+    def test_user_login_without_email(self):
+        """Test user login success scenario"""
+        payload = {
+            "password": self.password
+        }
+        res = self.client.post(self.url, payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn('access', res.data)
+
+    def test_user_login_without_password(self):
+        """Test user login success scenario"""
+        payload = {
+            "email": self.email
+        }
+        res = self.client.post(self.url, payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn('access', res.data)
+
+    def test_login_with_wrong_password(self):
+        """Test user login success scenario"""
+        payload = {
+            "email": self.email,
+            "password": "WrongPass123"
+        }
+        res = self.client.post(self.url, payload)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertNotIn('access', res.data)
