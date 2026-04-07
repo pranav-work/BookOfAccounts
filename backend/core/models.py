@@ -1,8 +1,9 @@
 # Create your models here.
 from django.db import models
 from django.contrib.auth.models import (
-    AbstractBaseUser, BaseUserManager, PermissionsMixin
+    AbstractBaseUser, BaseUserManager
 )
+
 
 class CustomUserManager(BaseUserManager):
     """Custom user model manager where email is the unique identifier"""

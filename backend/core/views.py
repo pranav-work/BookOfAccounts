@@ -27,6 +27,7 @@ class UserRegistrationView(APIView):
     User registration view
     """
     permission_classes = (AllowAny,)
+
     @extend_schema(
         operation_id='registerUser',
         methods=['post'],
@@ -52,8 +53,8 @@ class UserRegistrationView(APIView):
             OpenApiExample(
                 "Success Response",
                 value={
-                    "id":1,
-                    "email":"sample@gmail.com",
+                    "id": 1,
+                    "email": "sample@gmail.com",
                 },
                 response_only=True,
                 status_codes=[201]
@@ -90,7 +91,7 @@ class UserRegistrationView(APIView):
         except IntegrityError:
             return Response(
                 data={
-                    "message":"Database integrity error",
+                    "message" : "Database integrity error",
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )

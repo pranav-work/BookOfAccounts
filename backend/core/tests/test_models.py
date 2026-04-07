@@ -50,4 +50,3 @@ class TestCustomUser(TestCase):
         user = self.model.objects.create_user(
             email=email, password=self.password)
         self.assertEqual(user.email, 'SampleEmail@email.com')
-

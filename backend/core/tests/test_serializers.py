@@ -2,9 +2,9 @@
 # Author : Panni
 import pytest
 from django.test import TestCase
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from core.serializers import UserCreateSerializer
+
 
 class TestUserSerializer(TestCase):
     """Test user serializer"""
@@ -64,4 +64,3 @@ class TestUserSerializer(TestCase):
         serializer = UserCreateSerializer(data=data)
         with pytest.raises(serializers.ValidationError):
             serializer.is_valid(raise_exception=True)
-

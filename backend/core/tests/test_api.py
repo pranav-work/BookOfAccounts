@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # Author : Panni
-import json
 from unittest.mock import patch
 from django.urls import reverse
 from django.test import TestCase
@@ -27,11 +26,13 @@ class TestHealthCheck(TestCase):
             response.json()["version"],
             settings.SPECTACULAR_SETTINGS["VERSION"]
         )
+
+
 class TestUserRegistration(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = reverse('core:registration')
-        self.user_model= get_user_model()
+        self.user_model = get_user_model()
 
     def test_user_registration(self):
         """User registration success scenario"""
@@ -81,7 +82,6 @@ class TestUserRegistration(TestCase):
         res = self.client.post(self.url, payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("password", res.data["message"])
-
 
     def test_user_registration_internal_server_error(self):
         """Test API returns 500 when unexpected exception occurs"""

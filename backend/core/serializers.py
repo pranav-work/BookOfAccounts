@@ -5,11 +5,11 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
 
-
 class RegistrationRequestSerializer(serializers.Serializer):
     """Serializer for user registration request"""
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+
 
 class RegistrationResponseSerializer(serializers.Serializer):
     """Serializer for user registration response"""
@@ -30,7 +30,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
     @staticmethod
-    def validate_password(value:str):
+    def validate_password(value: str):
         """validate the password"""
         if len(value) < 8:
             raise serializers.ValidationError(
