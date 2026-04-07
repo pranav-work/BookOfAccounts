@@ -1,0 +1,23 @@
+meta {
+  name: Login with non exisinting email
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{domain}}/api/v1/login/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email":"sample4@gmail.com",
+    "password":"StrongPass123"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

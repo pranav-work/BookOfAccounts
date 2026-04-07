@@ -1,0 +1,23 @@
+meta {
+  name: Login Success
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{domain}}/api/v1/login/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email":"sample1@gmail.com",
+    "password":"StrongPass123"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

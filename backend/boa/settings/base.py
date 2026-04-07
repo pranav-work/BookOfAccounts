@@ -75,6 +75,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# USER
+AUTH_USER_MODEL = 'core.CustomUser'
+
 # REST FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
