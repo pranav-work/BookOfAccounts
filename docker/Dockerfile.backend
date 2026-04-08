@@ -1,5 +1,5 @@
 # ---- Base Image ----
-FROM python:3.11-slim
+FROM python:3.13-slim
 
 # Build Variables
 ARG USER_NAME=backenduser
@@ -15,7 +15,13 @@ ENV PATH="$VENV_PATH/bin:$PATH"
 
 # creation of user and group
 RUN addgroup --system ${USER_GROUP} \
-    && adduser --system ${USER_NAME} --ingroup ${USER_GROUP}
+    && adduser --system ${USER_NAME} \
+       --ingroup ${USER_GROUP} \
+       --home /home/${USER_NAME} \
+       --shell /bin/bash
+
+RUN mkdir -p /home/${USER_NAME} \
+    && chown -R ${USER_NAME}:${USER_GROUP} /home/${USER_NAME}
 
 # Setup venv
 COPY backend/requirements.txt /tmp/requirements.txt
@@ -36,4 +42,4 @@ COPY --chown=${USER_NAME}:${USER_GROUP} ./backend/ /backend/
 USER ${USER_NAME}
 EXPOSE 8000
 # Collect static files (optional if you're using whitenoise)
-CMD ["gunicorn", "boa.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "boa.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--worker-tmp-dir", "/tmp"]

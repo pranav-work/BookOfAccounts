@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  backend:
+    image: boa-backend:local
+    build:
+      context: ..   # 👈 go to repo root
+      dockerfile: docker/Dockerfile.backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - db_data:/app/db   # 👈 match Dockerfile WORKDIR (/app)
+    environment:
+      - DEBUG=True
+    restart: always
+
+  frontend:
+    image: boa-frontend:local
+    build:
+      context: ..   # 👈 repo root
+      dockerfile: docker/Dockerfile.frontend
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  db_data:

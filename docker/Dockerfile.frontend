@@ -1,7 +1,7 @@
 # ---- Build Stage ----
 FROM node:18 AS build
 
-WORKDIR /app
+WORKDIR /frontend
 
 # Copy dependency files from frontend folder
 COPY frontend/package*.json ./
@@ -21,7 +21,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy built files
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /frontend/dist /usr/share/nginx/html
 
 # Expose port
 EXPOSE 80
