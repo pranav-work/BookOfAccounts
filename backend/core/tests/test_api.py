@@ -21,7 +21,7 @@ class TestHealthCheck(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["message"], "ok")
+        self.assertEqual(response.json()["status"], "ok")
         self.assertEqual(
             response.json()["version"],
             settings.SPECTACULAR_SETTINGS["VERSION"]

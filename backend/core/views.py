@@ -19,7 +19,8 @@ def health_check(request):
     return JsonResponse(
         {
             'version': settings.SPECTACULAR_SETTINGS['VERSION']
-            , 'message': 'ok'
+            , 'status': 'ok'
+            , 'message': 'Backend is up and running'
         })
 
 
