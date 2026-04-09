@@ -29,10 +29,6 @@ db.sqlite3-journal
 .pybuilder/
 target/
 
-# Environments
-env/
-.venv/
-.idea/
 # -------- FRONTEND -------- #
 # Logs
 logs
@@ -58,3 +54,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# -------- Environments -------- #
+env/
+.venv/
+.idea/
+*.env
+*.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
