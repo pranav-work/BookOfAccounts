@@ -1,6 +1,7 @@
 from django.urls import path
 from drf_spectacular.views import (
     SpectacularSwaggerView, SpectacularRedocView, SpectacularAPIView)
+from rest_framework_simplejwt.views import TokenRefreshView
 from core import views
 
 
@@ -24,4 +25,8 @@ urlpatterns = [
         'login/'
         , views.UserLoginView.as_view()
         , name='login'),
+path(
+        'token-refresh/'
+        , TokenRefreshView.as_view()
+        , name='token-refresh'),
 ]
