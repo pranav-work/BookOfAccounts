@@ -5,27 +5,3 @@ body,
   padding: 0;
   min-height: 100%;
 }
-
-.App {
-    margin: 0;
-    padding: 0;
-    min-height: 100dvh;
-    background-color: #7E5CAD;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.na-container {
-    border: 1px solid #fff;
-    border-radius: 2.75rem;
-    background-color: #fff;
-    display: flex;
-    min-height: 12rem;
-    width: 25rem;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    font-size: large;
-    color: red;
-}
