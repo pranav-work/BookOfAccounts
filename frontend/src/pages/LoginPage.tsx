@@ -1,16 +1,26 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/loginUser';
-import styles from './LoginPage.module.css';
 import useBackendStatus from '../hooks/useBackendStatus';
+import { useAuth } from '../context/AuthContext';
+import styles from './LoginPage.module.css';
 
 function LoginPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const backendStatus = useBackendStatus();
-    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        await loginUser(email, password);
-    };
+  const navigate = useNavigate();
+  const authContext = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const backendStatus = useBackendStatus();
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try{
+      const tokens = await loginUser(email, password);
+      authContext?.login(tokens.access, tokens.refresh);
+      navigate('/dashboard');
+    } catch (error) {
+      alert('Login failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    }
+  };
     if (!backendStatus) {
     return (
     <div className={`${styles['login-page']}`}>
