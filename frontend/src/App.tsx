@@ -3,10 +3,11 @@ import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import './App.css'
 import ProtectedLayout from './routes/ProtectedLayout';
-
+import RootRedirect from './routes/RootRedirect';
 function App() {
   return (
       <Routes>
+        < Route path="/" element={<RootRedirect />} />
         <Route path="/login" element={<LoginPage />} />
         <Route element = {<ProtectedLayout />}>
           {/* Add your protected routes here */}
