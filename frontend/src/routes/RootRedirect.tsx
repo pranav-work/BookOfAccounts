@@ -4,8 +4,9 @@ import { useAuth } from "../context/AuthContext";
 export default function RootRedirect() {
     const authContext = useAuth();
     if (authContext?.isAuthenticated) {
-        return <Navigate to="/dashboard" replace/>;
+        console.log(authContext);
+        return <Navigate to="/dashboard" replace />;
     } else {
-        return <Navigate to="/login" replace/>;
+        return <Navigate to="/login" replace />;
     }
 }

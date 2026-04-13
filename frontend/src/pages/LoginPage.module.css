@@ -94,3 +94,31 @@
     font-size: large;
     color: red;
 }
+
+.forgot-password-link, .register-link {
+    cursor: pointer;
+}
+
+.error-message {
+    margin: 0;
+    display: block;
+    color: #b42318;
+    font-size: 0.95rem;
+    text-align: center;
+}
+.switch-link {
+    color: #7E5CAD;
+    text-decoration: none;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-align: center;
+}
+.login-form input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.login-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

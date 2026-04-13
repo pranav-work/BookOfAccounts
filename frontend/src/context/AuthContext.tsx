@@ -14,7 +14,7 @@ export const useAuth = () =>{
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(getAccessToken()));
 
   useEffect(() => {
     const token = getAccessToken();
