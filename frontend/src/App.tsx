@@ -1,9 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
-import Dashboard from './pages/Dashboard';
-import './App.css'
+import Home from './pages/Home';
 import ProtectedLayout from './routes/ProtectedLayout';
 import RootRedirect from './routes/RootRedirect';
+import './App.css'
 function App() {
   return (
       <Routes>
@@ -11,7 +11,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route element = {<ProtectedLayout />}>
           {/* Add your protected routes here */}
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/home" element={<Home />} />
         </Route>
       </Routes>
   );

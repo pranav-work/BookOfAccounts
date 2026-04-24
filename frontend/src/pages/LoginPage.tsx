@@ -18,7 +18,7 @@ function LoginForm( { onSwitch }: { onSwitch: (mode: AuthMode) => void }) {
     try{
       const tokens = await loginUser(email, password);
       authContext?.login(tokens.access, tokens.refresh);
-      navigate('/dashboard');
+      navigate('/home');
     } catch (error) {
       alert('Login failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }

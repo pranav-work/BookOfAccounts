@@ -5,7 +5,7 @@ export default function RootRedirect() {
     const authContext = useAuth();
     if (authContext?.isAuthenticated) {
         console.log(authContext);
-        return <Navigate to="/dashboard" replace />;
+        return <Navigate to="/home" replace />;
     } else {
         return <Navigate to="/login" replace />;
     }
