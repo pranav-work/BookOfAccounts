@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import api from '../services/api';
+import {publicApi} from '../services/api';
 
 interface HealthCheckResponse {
     status: string;
@@ -12,7 +12,7 @@ function useBackendStatus() {
     useEffect(() => {
         const checkBackend = async () => {
             try {
-                const res = await api.get<HealthCheckResponse>('health-check/');
+                const res = await publicApi.get<HealthCheckResponse>('health-check/');
                 setData(res.data);
             } catch {
                 setData(null)

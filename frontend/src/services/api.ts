@@ -1,16 +1,22 @@
 import axios from "axios";
-import config from "../config";
+import appConfig from "../AppConfig";
 import { clearTokens, getAccessToken, getRefreshToken, setTokens } from "../utils/token";
 
 
-const api = axios.create({
-    baseURL: config.apiBaseUrl,
+export const privateApi = axios.create({
+    baseURL: appConfig.apiBaseUrl,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+export const publicApi = axios.create({
+    baseURL: appConfig.apiBaseUrl,
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-api.interceptors.request.use(
+privateApi.interceptors.request.use(
     (config) => {
         const token = getAccessToken();
         if (token) {
@@ -23,7 +29,7 @@ api.interceptors.request.use(
     }
 );
 
-axios.interceptors.response.use(
+privateApi.interceptors.response.use(
     (res) => res,
     async (error) =>{
         const originalRequest = error.config;
@@ -31,10 +37,10 @@ axios.interceptors.response.use(
             originalRequest._retry = true;
             try{
                 const refreshToken = getRefreshToken();
-                const res = await api.post('/token-refresh', { refreshToken });
+                const res = await privateApi.post('/token-refresh', { refreshToken });
                 setTokens(res.data.accessToken, res.data.refreshToken);
                 originalRequest.headers['Authorization'] = `Bearer ${res.data.accessToken}`;
-                return api(originalRequest);
+                return privateApi(originalRequest);
             } catch (error) {
                 clearTokens();
                 window.location.href = '/login';
@@ -43,4 +49,3 @@ axios.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-export default api;

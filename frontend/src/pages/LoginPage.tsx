@@ -4,7 +4,7 @@ import { loginUser } from '../services/loginUser';
 import useBackendStatus from '../hooks/useBackendStatus';
 import { useAuth } from '../context/AuthContext';
 import styles from './LoginPage.module.css';
-import api from '../services/api';
+import {publicApi} from '../services/api';
 
 type AuthMode = 'login' | 'register' | 'forgot-password';
 
@@ -109,7 +109,7 @@ function RegisterForm( { onSwitch }: { onSwitch: (mode: AuthMode) => void }) {
     }
     try{
       // Call registration API here
-      const res = await api.post('/registration/', { email, password });
+      const res = await publicApi.post('/registration/', { email, password });
       if (res.status !== 201) {
         throw new Error('Registration failed with status ' + res.status);
       } 
