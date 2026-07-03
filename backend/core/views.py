@@ -3,14 +3,16 @@ from django.http import JsonResponse
 from django.conf import settings
 from drf_spectacular.utils import extend_schema, OpenApiExample
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError, AuthenticationFailed
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 from core.serializers import (
     RegistrationRequestSerializer, RegistrationResponseSerializer
     , ApiErrorResponseSerializer, UserCreateSerializer
-    , LoginRequestSerializer, CustomTokenSerializer
+    , LoginRequestSerializer, CustomTokenSerializer, LogoutRequestSerializer
 )
 
 
@@ -220,6 +222,83 @@ class UserLoginView(APIView):
                     {
                         "message": "Validation Error",
                         "errors": exp.detail,
+                    }
+                ).data,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as exp:
+            return Response(
+                data=ApiErrorResponseSerializer(
+                    {
+                        "message": "Something went wrong",
+                        "errors": str(exp),
+                    }
+                ).data,
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+class UserLogoutView(APIView):
+    """User logout view"""
+    permission_classes = (IsAuthenticated,)
+
+    @extend_schema(
+        operation_id='logoutUser',
+        methods=['post'],
+        summary='Logout a user',
+        description='Invalidates the provided refresh token.',
+        tags=['Login'],
+        request=LogoutRequestSerializer,
+        responses={
+            200: None,
+            400: ApiErrorResponseSerializer,
+            401: ApiErrorResponseSerializer,
+        },
+        examples=[
+            OpenApiExample(
+                "Valid request",
+                value={
+                    "refresh": "jsfhbsjhsjbj.sldgnsdnjdskdsbdfn.slfnjsdndvjdsj",
+                },
+                request_only=True,
+            ),
+            OpenApiExample(
+                "Success Response",
+                value={
+                    "message": "Logout successful",
+                },
+                response_only=True,
+                status_codes=[200],
+            ),
+        ],
+    )
+    def post(self, request, *args, **kwargs):
+        """User logout endpoint"""
+        serializer = LogoutRequestSerializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            token = RefreshToken(serializer.validated_data['refresh'])
+            token.blacklist()
+            return Response(
+                data={'message': 'Logout successful'},
+                status=status.HTTP_200_OK,
+            )
+        except ValidationError as exp:
+            return Response(
+                data=ApiErrorResponseSerializer(
+                    {
+                        "message": "Validation Error",
+                        "errors": exp.detail,
+                    }
+                ).data,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except TokenError as exp:
+            return Response(
+                data=ApiErrorResponseSerializer(
+                    {
+                        "message": "Invalid token",
+                        "errors": str(exp),
                     }
                 ).data,
                 status=status.HTTP_400_BAD_REQUEST,

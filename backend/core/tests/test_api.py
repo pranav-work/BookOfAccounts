@@ -7,6 +7,8 @@ from django.conf import settings
 from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.test import APIClient
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 from django.contrib.auth import get_user_model
 
 
@@ -191,3 +193,44 @@ class TestUserLogin(TestCase):
         }
         res = self.client.post(self.url, payload)
         self.assertEqual(res.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class TestUserLogout(TestCase):
+    """Test cases for user logout endpoint"""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.url = reverse('core:logout')
+        self.user = get_user_model().objects.create_user(
+            email="logout-user@gmail.com",
+            password="StrongPass123"
+        )
+        self.refresh = RefreshToken.for_user(self.user)
+        self.access = self.refresh.access_token
+
+    def test_user_logout_success(self):
+        """Test user logout blacklists refresh token"""
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access}")
+        res = self.client.post(self.url, {"refresh": str(self.refresh)})
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data["message"], "Logout successful")
+        self.assertTrue(
+            BlacklistedToken.objects.filter(
+                token__jti=self.refresh["jti"]
+            ).exists()
+        )
+
+    def test_user_logout_requires_authentication(self):
+        """Test logout requires a valid access token"""
+        res = self.client.post(self.url, {"refresh": str(self.refresh)})
+
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_user_logout_requires_refresh_token(self):
+        """Test logout requires refresh token in request body"""
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access}")
+        res = self.client.post(self.url, {})
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.data["message"], "Validation Error")
