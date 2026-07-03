@@ -1,0 +1,18 @@
+.nav-item{
+    display: flex;
+    height: 100%;
+    align-items: center;
+    border: 0.01px solid white;
+}
+.nav-item-text{
+    padding: 0.5rem 0.5rem;
+}
+
+.nav-item-tail{
+    width: 1rem;
+    height: 1rem;
+    background-color: white;
+    position: relative;
+    top: 1.05rem;
+}
+

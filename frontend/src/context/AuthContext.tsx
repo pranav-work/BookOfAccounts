@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { getAccessToken, clearTokens, setTokens } from "../utils/token";
+import { getAccessToken, clearTokens, setLoginTime, setTokens } from "../utils/token";
 
 type AuthContectType = {
   isAuthenticated: boolean;
@@ -25,6 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = (access_token: string, refresh_token: string) => {
     setTokens(access_token, refresh_token);
+    setLoginTime();
     setIsAuthenticated(true);
   };
 
