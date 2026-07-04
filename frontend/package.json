@@ -8,9 +8,11 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run --config vtest.config.ts",
+    "test:coverage": "vitest run --config vtest.config.ts --coverage"
   },
   "dependencies": {
+    "@vitest/coverage-v8": "^4.1.9",
     "axios": "^1.13.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

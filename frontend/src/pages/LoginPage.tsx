@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/loginUser';
 import useBackendStatus from '../hooks/useBackendStatus';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth';
 import styles from './LoginPage.module.css';
 import {publicApi} from '../services/api';
 

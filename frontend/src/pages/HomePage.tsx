@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {CgProfile} from 'react-icons/cg';
 import { useNavigate } from 'react-router-dom';
 import NavItem from '../components/navItem';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth';
 import { logoutUser } from '../services/logoutUser';
 import styles from './HomePage.module.css';
 

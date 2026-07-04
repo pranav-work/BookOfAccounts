@@ -41,7 +41,7 @@ privateApi.interceptors.response.use(
                 setTokens(res.data.accessToken, res.data.refreshToken);
                 originalRequest.headers['Authorization'] = `Bearer ${res.data.accessToken}`;
                 return privateApi(originalRequest);
-            } catch (error) {
+            } catch {
                 clearTokens();
                 window.location.href = '/login';
             }
