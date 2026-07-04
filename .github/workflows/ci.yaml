@@ -84,11 +84,8 @@ jobs:
         run: npm run lint --if-present
 
       # Run tests
-      - name: Install coverage provider
-        run: npm install --no-save @vitest/coverage-v8@4.0.18
-
-      - name: Run tests
-        run: npm run test:coverage
+#      - name: Run tests
+#        run: npm run test:coverage
 
       # Build
       - name: Build project

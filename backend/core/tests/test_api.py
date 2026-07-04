@@ -234,3 +234,42 @@ class TestUserLogout(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(res.data["message"], "Validation Error")
+
+    def test_logout_invalid_refresh_token_returns_400(self):
+        """Returns 400 when an invalid refresh token is provided."""
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.access}")
+        response = self.client.post(
+            self.url,
+            {"refresh": "invalid.token.value"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["message"], "Invalid token")
+        self.assertIn("errors", response.data)
+
+    @patch("core.views.RefreshToken.blacklist")
+    def test_logout_unexpected_exception_returns_500(self, mock_blacklist):
+        """Returns 500 when an unexpected exception occurs."""
+        mock_blacklist.side_effect = Exception("Unexpected error")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.access}"
+        )
+        response = self.client.post(
+            self.url,
+            {"refresh": str(self.refresh)},
+            format="json",
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+        self.assertEqual(
+            response.data["message"],
+            "Something went wrong",
+        )
+        self.assertEqual(
+            response.data["errors"],
+            "Unexpected error",
+        )
