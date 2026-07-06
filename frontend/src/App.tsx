@@ -1,26 +1,20 @@
-import {useEffect } from 'react'
-import axios from 'axios'
+import { Routes, Route } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import Home from './pages/HomePage';
+import ProtectedLayout from './routes/ProtectedLayout';
+import RootRedirect from './routes/RootRedirect';
 import './App.css'
-
-
 function App() {
-  console.log("App component rendered")
-  useEffect(() => {
-    try {
-        axios.get('http://127.0.0.1:8000/api/v1/health-check/').then(
-          res => console.log("res.data:", res.data)
-        )
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-  }, [])
   return (
-    <>
-      <div className="App">
-        <h1>Book of Accounts</h1>
-      </div>
-    </>
-  )
+      <Routes>
+        <Route path="/" element={<RootRedirect />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route element = {<ProtectedLayout />}>
+          {/* Add your protected routes here */}
+          <Route path="/home" element={<Home />} />
+        </Route>
+      </Routes>
+  );
 }
 
 export default App

@@ -8,12 +8,16 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run --config vtest.config.ts",
+    "test:coverage": "vitest run --config vtest.config.ts --coverage"
   },
   "dependencies": {
+    "@vitest/coverage-v8": "^4.1.9",
     "axios": "^1.13.5",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-icons": "^5.6.0",
+    "react-router-dom": "^7.14.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

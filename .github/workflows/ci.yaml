@@ -84,8 +84,8 @@ jobs:
         run: npm run lint --if-present
 
       # Run tests
- #     - name: Run tests
- #       run: npm test --if-present
+#      - name: Run tests
+#        run: npm run test:coverage
 
       # Build
       - name: Build project

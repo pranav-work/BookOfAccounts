@@ -30,6 +30,11 @@ class LoginRequestSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
 
+class LogoutRequestSerializer(serializers.Serializer):
+    """Serializer for user logout request"""
+    refresh = serializers.CharField()
+
+
 class CustomTokenSerializer(TokenObtainPairSerializer):
     """Serializer for user login response"""
 
