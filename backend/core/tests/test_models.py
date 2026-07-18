@@ -3,6 +3,7 @@
 import pytest
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from core import models
 
 
 class TestCustomUser(TestCase):
@@ -50,3 +51,31 @@ class TestCustomUser(TestCase):
         user = self.model.objects.create_user(
             email=email, password=self.password)
         self.assertEqual(user.email, 'SampleEmail@email.com')
+
+
+
+class TestAccountModel(TestCase):
+     """ Test account model """
+
+     def setUp(self):
+         self.model = models.AccountModel
+
+     def test_model_string(self):
+         """Test model string method"""
+         account = self.model(
+             name="Test Account",
+         )
+         self.assertEqual(str(account), "Test Account")
+
+     def test_model_creation_with_defaults(self):
+         """Test model creation with default values"""
+         account = self.model(
+             name="Test Account",
+         )
+         account.save()
+         self.assertEqual(account.name, "Test Account")
+         self.assertEqual(account.balance, 0)
+         self.assertIsNone(account.description)
+         self.assertIsNotNone(account.created_at)
+         self.assertIsNotNone(account.updated_at)
+
