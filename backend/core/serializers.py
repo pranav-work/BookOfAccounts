@@ -4,6 +4,7 @@ import re
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from core import models
 
 
 class ApiErrorResponseSerializer(serializers.Serializer):
@@ -81,3 +82,24 @@ class UserCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Create and return a new `user` with an email and password."""
         return self.Meta.model.objects.create_user(**validated_data)
+
+
+class AccountsSerializer(serializers.ModelSerializer):
+    """Serializer for user accounts"""
+
+    class Meta:
+        model = models.AccountModel
+        fields = '__all__'
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    """Serializer for category objects"""
+    class Meta:
+        model = models.CategoryModel
+        fields = '__all__'
+
+class TransactionSerializer(serializers.ModelSerializer):
+    """Serializer for transaction objects"""
+    class Meta:
+        model = models.TransactionModel
+        fields = '__all__'

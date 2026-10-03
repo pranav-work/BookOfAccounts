@@ -1,9 +1,14 @@
-from django.urls import path
+from django.urls import path, include
 from drf_spectacular.views import (
     SpectacularSwaggerView, SpectacularRedocView, SpectacularAPIView)
 from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework.routers import DefaultRouter
 from core import views
 
+
+router = DefaultRouter()
+router.register(r'accounts', views.AccountsViewSet, basename='accounts')
+router.register(r'categories', views.CategoryViewSet, basename='categories')
 
 app_name = 'core'
 urlpatterns = [
@@ -33,4 +38,5 @@ urlpatterns = [
         'token-refresh/'
         , TokenRefreshView.as_view()
         , name='token-refresh'),
+    path('', include(router.urls))
 ]

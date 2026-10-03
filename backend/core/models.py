@@ -1,4 +1,5 @@
 # Create your models here.
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager,
@@ -47,6 +48,7 @@ class AccountsManager(models.Manager):
 
 class AccountModel(models.Model):
     id = models.AutoField(primary_key=True)
+    uid = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, null=False, unique=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=False, null=False)
@@ -72,3 +74,31 @@ class AccountModel(models.Model):
         if amount > self.balance:
             raise ValueError("Debit amount exceeds balance. Please enter valid")
         self.balance -= amount
+
+
+class CategoryModel(models.Model):
+
+    class CatTypes(models.TextChoices):
+        INCOME = 'I', 'Income'
+        EXPENSE = 'E', 'Expense'
+        TRANSFER = 'T', 'Transfer'
+
+    id = models.AutoField(primary_key=True)
+    uid = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=False, null=False, unique=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    type = models.CharField(max_length=255, blank=False, null=False, choices=CatTypes.choices)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class TransactionModel(models.Model):
+    id = models.AutoField(primary_key=True)
+    uid = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(default=timezone.now)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    account = models.ForeignKey(AccountModel, on_delete=models.CASCADE)
+    category = models.ForeignKey(CategoryModel, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

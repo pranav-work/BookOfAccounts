@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.exceptions import ValidationError, AuthenticationFailed
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -13,7 +14,14 @@ from core.serializers import (
     RegistrationRequestSerializer, RegistrationResponseSerializer
     , ApiErrorResponseSerializer, UserCreateSerializer
     , LoginRequestSerializer, CustomTokenSerializer, LogoutRequestSerializer
+    , AccountsSerializer, CategorySerializer, TransactionSerializer
 )
+
+from core.models import (
+    AccountModel, CategoryModel, TransactionModel
+)
+
+
 
 
 # Create your views here.
@@ -313,3 +321,32 @@ class UserLogoutView(APIView):
                 ).data,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+
+@extend_schema(
+    operation_id='account',
+    tags=['Account'],
+)
+class AccountsViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = AccountModel.objects.all()
+    serializer_class =AccountsSerializer
+
+@extend_schema(
+    operation_id='category',
+    tags=['Category'],
+)
+class CategoryViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = CategoryModel.objects.all()
+    serializer_class = CategorySerializer
+
+
+@extend_schema(
+    operation_id='transaction',
+    tags=['Transaction'],
+)
+class TransactionViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = TransactionModel.objects.all()
+    serializer_class = TransactionSerializer
